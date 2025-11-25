@@ -56,7 +56,11 @@ body {
   max-width: 42rem; /* keep original max width for large screens */
   background-color: var(--color-background-500);
   border-radius: 0.9rem;
+  /* keep scrolling for inner content but ensure the toggle is visible
+     when content is collapsed -> add a minimum height and small top padding */
   overflow: auto;
+  min-height: 6rem;
+  padding-top: 0.8rem;
   position: relative;
 }
 
