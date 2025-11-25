@@ -45,8 +45,15 @@ export default function StarRating({
     fontSize: `${size / 1.5}px`,
   };
 
+  // set CSS variable so outer styles / media queries can override
+  const containerInlineStyle = {
+    ...containerStyle,
+    // expose size as a CSS variable for responsive overrides
+    "--star-size": `${size}px`,
+  };
+
   return (
-    <div style={containerStyle} className={className}>
+    <div style={containerInlineStyle} className={`star-rating ${className}`}>
       <div style={starContainerStyle}>
         {Array.from({ length: maxRating }, (_, i) => (
           <Star
@@ -71,9 +78,10 @@ export default function StarRating({
 
 function Star({ onRate, full, onHoverIn, onHoverOut, color, size }) {
   const starStyle = {
-    width: `${size}px`,
-    height: `${size}px`,
-    display: "blcok",
+    // use CSS variable (allows overriding with media queries)
+    width: "var(--star-size)",
+    height: "var(--star-size)",
+    display: "block",
     cursor: "pointer",
   };
   return (

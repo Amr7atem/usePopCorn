@@ -68,3 +68,26 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+## Responsive styling added ✅
+
+I added a mobile-first responsive stylesheet and updated component paint points so the UI works well across viewport sizes. Here are the main changes and how to test them locally:
+
+- Breakpoints used: 600px, 900px, 1200px
+- Main layout switches to a single-column flow on small viewports and two-column boxes on medium/large screens.
+- Nav bar stacks items on small screens and returns to a 3-column layout on wider viewports.
+- Movie detail header switches from column (mobile) to row (desktop) so poster and overview display side-by-side.
+- The rating component now supports size via a CSS variable (`--star-size`) which allows responsive adjustments.
+
+How to test locally:
+
+1. Install dependencies and start the dev server:
+
+```powershell
+npm install
+npm start
+```
+
+2. Open http://localhost:3000 and resize the browser (or use your device toolbar in devtools) to check the responsiveness at different widths (mobile/tablet/desktop).
+
+If you want any tweaks to breakpoints or a different mobile/desktop layout, tell me which screens to prioritize and I can refine the design.
