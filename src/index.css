@@ -49,6 +49,8 @@ body {
   gap: 1.6rem;
   align-items: stretch;
   justify-content: flex-start;
+  /* keep main height available so inner boxes can scroll on mobile */
+  min-height: calc(100vh - 9rem);
 }
 
 .box {
@@ -56,12 +58,37 @@ body {
   max-width: 42rem; /* keep original max width for large screens */
   background-color: var(--color-background-500);
   border-radius: 0.9rem;
-  /* keep scrolling for inner content but ensure the toggle is visible
-     when content is collapsed -> add a minimum height and small top padding */
-  overflow: auto;
+  /* header will be visible always; content sits in .box-content and scrolls if needed */
+  overflow: visible;
   min-height: 6rem;
-  padding-top: 0.8rem;
+  padding-top: 0.8rem; /* leave space so .btn-toggle doesn't overlap content */
   position: relative;
+}
+
+/* When layout is wide, make the box a column flex so header and content
+   can split space and content scrolls independently */
+@media (min-width: 900px) {
+  .box {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .box-header {
+    /* keep header visible and not flexible */
+    flex: 0 0 auto;
+  }
+
+  .box-content {
+    /* fill remaining space and scroll if content is long */
+    flex: 1 1 auto;
+    overflow: auto;
+  }
+
+  /* specifically ensure movie list scrolls cleanly */
+  .box-content .list.list-movies {
+    padding-right: 0.4rem; /* avoid content clipping behind scrollbar */
+  }
 }
 
 .loader {
@@ -169,6 +196,51 @@ body {
 .list.list-movies li {
   cursor: pointer;
   transition: all 0.3s;
+}
+
+/* Empty states */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  padding: 2.4rem 1.6rem;
+  text-align: center;
+  color: var(--color-text-dark);
+}
+
+.empty-illustration {
+  font-size: 4rem;
+  padding: 0.6rem;
+  width: 6rem;
+  height: 6rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.list-movies-empty h3,
+.watched-empty h3 {
+  margin: 0.2rem 0;
+  font-size: 1.6rem;
+  color: var(--color-text);
+}
+
+.list-movies-empty p,
+.watched-empty p {
+  margin: 0;
+  font-size: 1.4rem;
+  color: var(--color-text-dark);
+}
+
+@media (min-width: 900px) {
+  .list-movies-empty,
+  .watched-empty {
+    padding: 1.6rem;
+  }
 }
 
 .list.list-movies li:hover {
@@ -354,6 +426,84 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Box header / content split so header remains visible when collapsed */
+.box-header {
+  padding: 0.6rem 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.02),
+    rgba(255, 255, 255, 0)
+  );
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  transition: background-color 160ms ease, opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.box-content {
+  padding: 0.6rem 0.8rem 1.2rem 0.8rem;
+  /* allow the content area to scroll on mobile too */
+  max-height: calc(100vh - 14rem);
+  overflow: auto;
+}
+
+/* collapsed state: make header distinct and keep a compact visible header */
+.box.collapsed .box-header {
+  opacity: 1;
+  transform: translateY(0);
+  background: linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.025),
+    rgba(255, 255, 255, 0)
+  );
+  border-bottom: 1px solid rgba(255, 255, 255, 0.035);
+}
+
+/* Make toggle more touch-friendly and visually clear */
+.btn-toggle {
+  height: 2.8rem;
+  width: 2.8rem;
+  display: inline-grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: transform 120ms ease, background-color 120ms ease;
+}
+
+.btn-toggle:hover,
+.btn-toggle:focus {
+  transform: translateY(-2px);
+  background-color: rgba(0, 0, 0, 0.18);
+  outline: none;
+}
+
+/* visual improvement for .summary header */
+.summary h2 {
+  display: inline-block;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.6rem;
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--color-text);
+}
+
+/* subtle and clean scrollbar for modern browsers */
+.box-content::-webkit-scrollbar {
+  width: 10px;
+}
+.box-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.box-content:hover::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
 }
 
 /* star rating responsive helpers */

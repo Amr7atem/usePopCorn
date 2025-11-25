@@ -52,7 +52,7 @@ export default function App() {
           )}
           {error && <ErrorMessage message={error} />}
         </Box>
-        <Box>
+        <Box header={<WatchedSummary watched={watched} />}>
           {selctedId ? (
             <MovieDetails
               selctedId={selctedId}
@@ -61,13 +61,10 @@ export default function App() {
               watched={watched}
             />
           ) : (
-            <>
-              <WatchedSummary watched={watched} />
-              <WatchedMoviesList
-                watched={watched}
-                onDeleteWatched={handleDeleteWatched}
-              />
-            </>
+            <WatchedMoviesList
+              watched={watched}
+              onDeleteWatched={handleDeleteWatched}
+            />
           )}
         </Box>
       </Main>
@@ -139,23 +136,42 @@ function Main({ children }) {
   return <main className="main">{children}</main>;
 }
 
-function Box({ children }) {
+function Box({ children, header = null }) {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div className="box">
-      <button className="btn-toggle" onClick={() => setIsOpen((open) => !open)}>
+    <div className={`box ${isOpen ? "" : "collapsed"}`}>
+      <button
+        className="btn-toggle"
+        aria-expanded={isOpen}
+        onClick={() => setIsOpen((open) => !open)}
+      >
         {isOpen ? "–" : "+"}
       </button>
-      {isOpen && children}
+
+      {/* header is always shown (useful for WatchedSummary) */}
+      {header && <div className="box-header">{header}</div>}
+
+      {/* the collapsible content -- hidden when closed */}
+      {isOpen && <div className="box-content">{children}</div>}
     </div>
   );
 }
 
 function MovieList({ movies, onSelectMovie }) {
+  if (!movies || movies.length === 0) {
+    return (
+      <div className="empty list-movies-empty">
+        <div className="empty-illustration">🎬</div>
+        <h3>No movies yet</h3>
+        <p>Try searching for a movie title — results will appear here.</p>
+      </div>
+    );
+  }
+
   return (
     <ul className="list list-movies">
-      {movies?.map((movie) => (
+      {movies.map((movie) => (
         <Movie movie={movie} key={movie.imdbID} onSelectMovie={onSelectMovie} />
       ))}
     </ul>
@@ -371,6 +387,16 @@ function WatchedSummary({ watched }) {
 }
 
 function WatchedMoviesList({ watched, onDeleteWatched }) {
+  if (!watched || watched.length === 0) {
+    return (
+      <div className="empty watched-empty">
+        <div className="empty-illustration">🍿</div>
+        <h3>Your watched list is empty</h3>
+        <p>Add movies to your watched list by opening a movie and rating it.</p>
+      </div>
+    );
+  }
+
   return (
     <ul className="list">
       {watched.map((movie) => (
